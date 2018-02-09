@@ -1,2 +1,2 @@
-# Python_Sripts
-A repo for more scripts dealing with OS and or cloud
+# Py_Game
+A repo for learning PY-Game library and components.

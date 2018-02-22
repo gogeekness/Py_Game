@@ -3,15 +3,15 @@
 
 import sys, pygame, os
 from pygame.locals import *
+import random
 
+# set size of the field
 size = width, height = 800, 600
-black = 0, 0, 0
+black = (0, 0, 0)
 speed = [3,3]
-speed2 = [-2,4]
 
-
+#define where data directory is located
 main_dir = os.path.split(os.path.abspath(__file__))[0]
-#data_dir = os.path.join(main_dir, 'data')
 
 
 def load_image(file):
@@ -21,28 +21,30 @@ def load_image(file):
         raise SystemExit('could not load ball image.')
     return image
 
+#========================================================================
 
 class Ball(pygame.sprite.Sprite):
     image = None
-    def __init__(self, pos):
-        pygame.sprite.Sprite.__init__(self)
+    def __init__(self, pos, speed):
+        pygame.sprite.Sprite.__init__(self, self.containers)
         self.image = load_image('ball.png')
         self.rect = self.image.get_rect()
         self.rect.x = pos[0]
         self.rect.y = pos[1]
+        self.speedx = speed[0] * random.choice((-1,1))
+        self.speedy = speed[1] * random.choice((-1,1))
+        #-print("Ball: ",pos[0], pos[1], self.speedx, self.speedy)
 
-    def move(self, mov):
-        self.rect.move_ip(mov)
+    def update(self):
+        #Move ball
+        self.rect.move_ip(self.speedx, self.speedy)
+        #if hit edge revsere direction
+        if self.rect.left < 0 or self.rect.right > width:
+            self.speedx = -self.speedx
+        if self.rect.top < 0 or self.rect.bottom > height:
+            self.speedy = -self.speedy
 
-        #super(Ball, self).__init__()
-
-    #def move(self.direction):
-        #ballrect = ballrect.move(speed)
-        #if ballrect.left < 0 or ballrect.right > width:
-            #speed[0] = -speed[0]
-        #if ballrect.top < 0 or ballrect.bottom > height:
-            #speed[1] = -speed[1]
-
+#=====================================================================
 
 def main():
     pygame.init()
@@ -52,12 +54,17 @@ def main():
     backscreen.fill(black)
     backscreen.blit(backscreen, (0,0))
 
-    #keep track of Sprites
     #load_image("ball.png")
+    balls = pygame.sprite.Group()
+    all = pygame.sprite.RenderUpdates()
+    Ball.containers = balls, all
+    lastball = pygame.sprite.GroupSingle()
 
-    ball1 = Ball((150, 300))
-    ball2 = Ball((300, 150))
-    all = pygame.sprite.RenderPlain(ball1, ball2)
+    for i in range (0,10):
+        #set random location for all of teh instances
+        pox = random.randrange(50, width - 100, 25)
+        poy = random.randrange(50, height - 100, 25)
+        Ball((pox,poy),(speed))
 
 
     #ballrect = ball.get_rect()
@@ -71,33 +78,20 @@ def main():
             if event.type == pygame.QUIT \
                 or (event.type == KEYDOWN and event.key == K_ESCAPE):
                     sys.exit()
+
         #clear sprites
-        #all.clear(screen, backgroud)
-        #update sprites
-
         backscreen.fill(black)
-        ball1.move(speed)
-        ball2.move(speed2)
-        if ball1.rect.left < 0 or ball1.rect.right > width:
-            speed[0] = -speed[0]
-        if ball1.rect.top < 0 or ball1.rect.bottom > height:
-            speed[1] = -speed[1]
 
-        if ball2.rect.left < 0 or ball2.rect.right > width:
-            speed2[0] = -speed2[0]
-        if ball2.rect.top < 0 or ball2.rect.bottom > height:
-            speed2[1] = -speed2[1]
+        #update sprites
+        all.update()
 
-
+        #update display
         dirty = all.draw(backscreen)
         pygame.display.update(dirty)
 
         pygame.display.flip()
 
-        #redraw sprites
-        #screen.blit(ball, ballrect)
-        #dirty = all.draw(backscreen)
-        #pygame.display(dirty)
+        #timer set for 30 frames
         clock.tick(30)
 
 #This is the main_init

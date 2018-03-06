@@ -14,8 +14,6 @@ from random import randrange, randint
 
 col = 0
 row = 0
-startx = 1
-starty = 1
 black = (  0,   0,   0)
 white = (255, 255, 255)
 yellow =(255, 255,   0)
@@ -27,8 +25,7 @@ RED =   (255,   0,   0)
 def draw_maze(screen, maze1, size, col, row):
     #Block size
     blocksz = ((size[0] / (col * 2 + 1)), (size[1] / (row * 2 + 1)))
-    #solve color
-
+    #solve block size
     solvesz = (blocksz[0]/2, blocksz[1]/2)
     solveoffset = (solvesz[0]/2, solvesz[1]/2)
     #boarder around the maze
@@ -44,11 +41,9 @@ def draw_maze(screen, maze1, size, col, row):
     for y in range(row):
         yy = (row - 1) - y
         for x in range(col):      # [ [(T, T, T, T) ...][() () () () () ][][][][]  ]
-            celemnt = 100 + (y*3 + y*3)%155
-            color = (celemnt, celemnt, celemnt)
             if (x + 1) < col and (y + 1) < row:  #Central Blocks
                 centerblk = (((x * 2 + 1)*blocksz[0]) + blocksz[0],((y * 2 + 1)*blocksz[1]) + blocksz[1])
-                pygame.draw.rect(screen, color, [centerblk[0], centerblk[1], blocksz[0]+1, blocksz[1]+1])
+                pygame.draw.rect(screen, white, [centerblk[0], centerblk[1], blocksz[0]+1, blocksz[1]+1])
             if maze1.data[x][y][1] == False and (x + 1) < col:  #If there is a EAST blocked
                 eastgate = (((x * 2 + 2) * blocksz[0]),((yy * 2 + 1) * blocksz[1]))
                 pygame.draw.rect(screen, white, [eastgate[0], eastgate[1], blocksz[0]+1, blocksz[1]+1])

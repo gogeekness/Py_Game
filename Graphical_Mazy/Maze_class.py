@@ -51,8 +51,6 @@ class halls:
         #out of bounds are always sealed
             return "bounds"
 
-
-
     def solve(self, x, y, width, height):
         # directions for NORTH, EAST, SOUTH, WEST
         # F(n) = Goal
@@ -73,14 +71,6 @@ class halls:
             return True
         self.data[x][y][4] = False
         return False
-
-    def test_maze(self, width, height):
-        for y in range(height):
-            for x in range(width):
-                #print("Testing x y:" + str(x) + " " + str(y) + " " + sealed_cell(x,y))
-                if self.sealed_cell(x, y, width, height) == "sealed":
-                    return False
-        return True
 
     def build_maze(self, x, y, width, height):
         # directions for NORTH, EAST, SOUTH, WEST
